@@ -97,16 +97,28 @@ final class GPSStamp {
         let offsetMinutes: Int = abs(offset % 3600) / 60
         let offsetString: String = String(format: "%+03d:%02d", offsetHours, offsetMinutes)
 
-        let fmt: DateFormatter = DateFormatter()
-        fmt.dateFormat = "yyyy:MM:dd HH:mm:ss"
-        fmt.timeZone = timezone
-        let localTimeString: String = fmt.string(from: timestamp)
+        let localFmt: DateFormatter = DateFormatter()
+        localFmt.dateFormat = "yyyy:MM:dd HH:mm:ss"
+        localFmt.timeZone = timezone
+        let localTimeString: String = localFmt.string(from: timestamp)
+
+        let utcDateFmt: DateFormatter = DateFormatter()
+        utcDateFmt.dateFormat = "yyyy:MM:dd"
+        utcDateFmt.timeZone = TimeZone(identifier: "UTC")
+        let utcDateString: String = utcDateFmt.string(from: timestamp)
+
+        let utcTimeFmt: DateFormatter = DateFormatter()
+        utcTimeFmt.dateFormat = "HH:mm:ss"
+        utcTimeFmt.timeZone = TimeZone(identifier: "UTC")
+        let utcTimeString: String = utcTimeFmt.string(from: timestamp)
 
         return [
             "-AllDates=\(localTimeString)",
             "-OffsetTime=\(offsetString)",
             "-OffsetTimeOriginal=\(offsetString)",
-            "-OffsetTimeDigitized=\(offsetString)"
+            "-OffsetTimeDigitized=\(offsetString)",
+            "-GPSDateStamp=\(utcDateString)",
+            "-GPSTimeStamp=\(utcTimeString)"
         ]
     }
 
